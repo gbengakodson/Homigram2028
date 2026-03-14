@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,12 +20,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-n--4*u1lpm6si4p4u^=_vjq%wnpfff^#lwru7x1ax475ujx^5$'
+SECRET_KEY = 'django-insecure-n--4*u1lpm6si4000p4u^=_vjq%wnpfff^#lwru7x1ax475ujx^5$'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['homigram.pythonanywhere.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'homigram',
+    'django.contrib.humanize',
 ]
 
 MIDDLEWARE = [
@@ -54,13 +56,14 @@ ROOT_URLCONF = 'Hom_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'homigram.context_processors.unread_messages'
             ],
         },
     },
@@ -111,12 +114,72 @@ USE_I18N = True
 USE_TZ = True
 
 
+# Message settings
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# settings.py
+
+# Email configuration for development (prints to console)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# For production with Gmail (uncomment and configure for actual emails)
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'your-email@gmail.com'
+# EMAIL_HOST_PASSWORD = 'your-app-password'  # Use app password for Gmail
+# DEFAULT_FROM_EMAIL = 'your-email@gmail.com'
+
+# Site settings
+SITE_NAME = 'Homigram.ng'
+SITE_URL = 'http://127.0.0.1:8000'  # Change in production
+
+
+
+# Media files (user uploaded)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'homigram', 'media')  # Points to Hom_project/homigram/media/
+
+# Security settings
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+SECURE_SSL_REDIRECT = True
+
+# Static files
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'homigram', 'static')]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+
+# settings.py
+
+# Google Maps API
+GOOGLE_MAPS_API_KEY = 'AIzaSyD5lB19YI8Lu4fZboTQq9hxUZnMcWOSHJE'  # Replace with your actual key
+
+# For development, you can use a test key (will show "for development purposes" watermark)
+# GOOGLE_MAPS_API_KEY = 'AIzaSyD5lB19YI8Lu4fZboTQq9hxUZnMcWOSHJE, AIzaSyAnfFS5KMU7P4uqHRY8sWhh23u-rploArI'
+
+
+# Paystack Configuration
+PAYSTACK_PUBLIC_KEY = 'pk_test_4579ce71a2ecdd547a2f51a7d9e0354599061d00'  # Replace with your actual public key
+PAYSTACK_SECRET_KEY = 'sk_test_6d3350838a2fb9ee06b4b6719d8c77c270ce4f78'  # Replace with your actual secret key
+
+# For testing, you can get test keys from: https://dashboard.paystack.com/#/settings/developer
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'home'
